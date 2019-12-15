@@ -9,7 +9,7 @@
 #include <random>
 #include <algorithm>
 #include <bitset>
-#include "crypto/sha256.h"
+#include "./sha256.h"
 using int_t = mppp::integer<64>;    //96  = 3072*2/64
 template <class Cont, class Lamb>
 inline void forEach(const Cont &c, const Lamb &fun){

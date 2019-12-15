@@ -86,7 +86,6 @@ bool PaillierPublicKey::ZKPInSet(const int_t &ciphertext, const std::vector<int_
         return zkn == akue;
     });
 }
-
 std::string PaillierPrivateKey::to_string() const{
     return this->to_json().dump();
 }
@@ -109,14 +108,12 @@ json PaillierPrivateKey::to_json() const{
 PaillierPublicKey::PaillierPublicKey(const std::string &n){
     this->n = int_t{n};
     this->_n2 = pow(this->n,2);
-    this->MAX_SAFE_INTEGER = this->n / 3 - 1;
     this->g = this->n+1;
     this->keysize = mpz_sizeinbase(this->n.get_mpz_view(), 2);
 }
 PaillierPublicKey::PaillierPublicKey(const int_t &n){
     this->n = n;
     this->g = this->n+1;
-    this->MAX_SAFE_INTEGER = this->n / 3 - 1;
     this->_n2 = pow(this->n,2);
     this->keysize = mpz_sizeinbase(this->n.get_mpz_view(), 2);
 }
@@ -154,7 +151,6 @@ int_t PaillierPublicKey::mul(const int_t &enc_n, const int_t &raw_m, const Paill
 int_t PaillierPublicKey::mul(const int_t &enc_n, const int_t &raw_m) const{
     return PaillierPublicKey::mul(enc_n, raw_m, *this);
 }
-
 int_t PaillierPublicKey::raw_add(const int_t &enc_n, const int_t &raw_m) const{
     return enc_n * powm(this->g, raw_m, this->_n2) % this->_n2;
 }

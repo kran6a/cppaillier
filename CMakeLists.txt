@@ -15,4 +15,4 @@ find_library(GMP_LIB gmp)
 
 add_executable(paillier_test test.cpp utils.h)
 
-target_link_libraries(test ${MPPP_LIB} ${GMP_LIB})
+target_link_libraries(paillier_test ${MPPP_LIB} ${GMP_LIB})

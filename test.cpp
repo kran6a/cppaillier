@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../modules/crypto/paillier.cpp"
+#include "paillier.cpp"
 static PaillierPrivateKey p = PaillierPrivateKey::generateKeypair().second;
 void ZKPInSetTest(){
     std::vector<int_t> validMessages = {int_t{10}, int_t{100}, int_t{1000}, int_t{10000}, int_t{32}};

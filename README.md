@@ -7,19 +7,20 @@ Paillier homomorphic encryption implemented in C++. Including some ZKPs.
 
 1. Install gmp library if you don't have it already https://gmplib.org
 2. Install mppp https://github.com/bluescarni/mppp
-3. ```bash
+3. Install nlohmann json (required for key serialization) https://github.com/nlohmann/json
+4. ```bash
     git clone https://github.com/kran6a/cppaillier
     ```
-4. ```bash
+5. ```bash
     cd cppaillier
     ```
-5. ```bash
+6. ```bash
     cmake .
     ```
-6. ```bash
+7. ```bash
     make
     ```
-7. ```bash
+8. ```bash
     ./paillier_test
     ```
 

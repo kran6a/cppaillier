@@ -60,14 +60,14 @@ template <typename Cont, typename Cont2>
     });
     return ret;
 }
-std::string sha256(const std::string &input){
+std::string inline sha256(const std::string &input){
     std::string ret;
     ret.reserve(64);
     picosha2::hash256_hex_string(input, ret);
     return ret;
 }
 template <class Cont>
-[[nodiscard]] std::string join(const Cont &c, const std::string_view &separator = ""){
+[[nodiscard]] std::string inline join(const Cont &c, const std::string_view &separator = ""){
     std::string ret;
     ret.reserve(c.size()+c.size()*separator.size());
     for (const auto &i : c)
@@ -84,7 +84,7 @@ template <class Cont>
     mpz_invert(ret.get_mpz_t(), n.get_mpz_view(), mod.get_mpz_view());
     return ret;
 }
-[[nodiscard]] int_t getRandomNumber(const unsigned short bitsize){
+[[nodiscard]] inline int_t getRandomNumber(const unsigned short bitsize){
     mpz_class ran;
     gmp_randclass rr(gmp_randinit_default);
     std::random_device r{};
@@ -99,7 +99,7 @@ template <class Cont>
     mpz_ior(ret.get_mpz_t(), n1.get_mpz_view(), n2.get_mpz_view());
     return ret;
 }
-[[nodiscard]] int_t getCoprime(int_t target){
+[[nodiscard]] inline int_t getCoprime(int_t target){
     while (true) {
         const unsigned short bits = mpz_sizeinbase(target.get_mpz_view(), 2);
         const int_t lowerBound = pow(int_t{2},bits-1)+1;
@@ -118,7 +118,7 @@ template <class Cont>
     }
 }
 template <class T = unsigned long int, size_t ST = sizeof(T)*8>
-constexpr std::bitset<ST>toBinary(const T &value) {
+constexpr inline std::bitset<ST>toBinary(const T &value) {
     return std::bitset<ST>(value);
 }
 inline bool isProbablyPrime(const int_t &n, unsigned short rounds = 50){

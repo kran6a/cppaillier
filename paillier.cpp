@@ -2,7 +2,7 @@
 // Created by kranga on 12/11/19.
 //
 
-#include "paillier.h"
+#include "./paillier.h"
 int_t PaillierPublicKey::randomR() const{
     int_t ret;
     do {
@@ -36,7 +36,7 @@ std::pair<const int_t, std::vector<std::vector<int_t>>> PaillierPublicKey::encry
             int_t ek;
             do {
                 ek = getRandomNumber(bits);
-            } while (ek <= 2 || ek >= pow(int_t{2}, bits));
+            } while (ek <= 2 or ek >= pow(int_t{2}, bits));
             const int_t zn = powm(zk, this->n, this->_n2);
             const int_t ue = powm(uk, ek, this->_n2);
             const int_t ak = (zn * invertm(ue, this->_n2)) % this->_n2;
@@ -71,7 +71,7 @@ bool PaillierPublicKey::ZKPInSet(const int_t &ciphertext, const std::vector<int_
         return uk;
     });
 
-    const int_t esum = reduce(es,[bits](auto acc, const auto &ek)->int_t{return (acc+ek) % pow(int_t{2}, bits);}, int_t{0});
+    const int_t esum = reduce(es, [bits](auto acc, const auto &ek)->int_t{return (acc+ek) % pow(int_t{2}, bits);}, int_t{0});
     if (int_t{hash, 16} != esum)
         return false;
     unsigned long long int i = 0;
@@ -86,6 +86,7 @@ bool PaillierPublicKey::ZKPInSet(const int_t &ciphertext, const std::vector<int_
         return zkn == akue;
     });
 }
+
 std::string PaillierPrivateKey::to_string() const{
     return this->to_json().dump();
 }
@@ -95,6 +96,7 @@ std::string PaillierPublicKey::to_string() const{
 json PaillierPublicKey::to_json() const{
     return json{
             {"n", this->n.to_string()},
+            {"n2", this->_n2.to_string()},
             {"g", this->g.to_string()}
     };
 }
@@ -151,6 +153,7 @@ int_t PaillierPublicKey::mul(const int_t &enc_n, const int_t &raw_m, const Paill
 int_t PaillierPublicKey::mul(const int_t &enc_n, const int_t &raw_m) const{
     return PaillierPublicKey::mul(enc_n, raw_m, *this);
 }
+
 int_t PaillierPublicKey::raw_add(const int_t &enc_n, const int_t &raw_m) const{
     return enc_n * powm(this->g, raw_m, this->_n2) % this->_n2;
 }
@@ -165,7 +168,7 @@ int_t PaillierPublicKey::sub(const int_t &enc_n, const int_t &enc_m, const Paill
     return enc_n*invertm(enc_m, pk._n2) % pk._n2;
 }
 int_t PaillierPublicKey::sub(const int_t &enc_n, const int_t &enc_m) const {
-   return PaillierPublicKey::sub(enc_n, enc_m, *this);
+    return PaillierPublicKey::sub(enc_n, enc_m, *this);
 }
 
 int_t PaillierPrivateKey::L_function(const int_t &n, const int_t &p){
@@ -196,6 +199,7 @@ int_t PaillierPrivateKey::decrypt(const int_t &ciphertext) const{
 PaillierPublicKey PaillierPrivateKey::getPublicKey() const{
     return this->pk;
 }
+
 std::pair<const int_t, const int_t> PaillierPrivateKey::sign(const int_t &message) const{
     const int_t hash = int_t{sha256(message.to_string()), 16};
     const int_t lambda = lcm(this->p-1, this->q-1);
@@ -208,6 +212,7 @@ std::pair<const int_t, const int_t> PaillierPrivateKey::sign(const int_t &messag
     const int_t s2 = powm(hash * inverse_g, inverse_n, this->n);
     return std::pair<int_t, int_t>{s1, s2};
 }
+
 int_t PaillierPrivateKey::computeR(const int_t &ciphertext) const {
     const int_t M = invertm(this->n, (this->p-1)*(this->q-1));
     return powm(ciphertext, M, this->n);
@@ -216,6 +221,7 @@ int_t PaillierPrivateKey::computeR(const int_t &ciphertext) const {
 bool PaillierPrivateKey::ZKPCorrectDecryption(const int_t &ciphtext, const int_t &VerifierRandomValue) const{
     return ZKPCorrectDecryption(ciphtext, this->decrypt(ciphtext), VerifierRandomValue);
 }
+
 bool PaillierPrivateKey::ZKPCorrectDecryption(const int_t &ciphtext, const int_t &obtainedPlaintext, const int_t &VerifierRandomValue) const{
     const int_t ciphertext = PaillierPublicKey::sub(ciphtext, this->getPublicKey().encrypt(obtainedPlaintext), this->getPublicKey());
     const std::pair<int_t, int_t> CifradoADemostrar_R = {this->computeR(ciphertext), ciphertext};
